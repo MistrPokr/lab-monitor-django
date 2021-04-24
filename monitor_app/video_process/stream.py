@@ -14,8 +14,14 @@ class VideoStream:
         self.process = None
 
         # Defines the stream's input & output
-        self.stream = ffmpeg.input(self.input)
-        self.stream = ffmpeg.output(self.stream, self.output, f="flv")
+        # ffmpeg -f v4l2 -video_size 1280x720 -input_format mjpeg -i /dev/video2 -b:v 1000k
+        # -r 15 -f flv rtmp://192.168.0.138/live/py
+        self.input_args = {"f": "v4l2", "s": "1280x720", "input_format": "mjpeg"}
+
+        self.output_args = {"f": "flv", "r": "10", "b": "2000k"}
+
+        self.stream = ffmpeg.input(self.input, **self.input_args)
+        self.stream = ffmpeg.output(self.stream, self.output, **self.output_args)
 
     def start_stream(self):
         """
@@ -23,6 +29,7 @@ class VideoStream:
         :return: None
         """
         self.process = ffmpeg.run_async(self.stream, pipe_stdin=True)
+        # self.process = ffmpeg.run(self.stream)
 
     def stop_stream(self):
         """
