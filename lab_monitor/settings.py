@@ -126,3 +126,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = "/static/"
+
+# Celery Settings
+CELERY_TIMEZONE = "Asia/Shanghai"
+CELERY_BROKER_URL = "pyamqp://"
+CELERY_RESULT_BACKEND = "rpc://"
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_ENABLE_UTC = True
