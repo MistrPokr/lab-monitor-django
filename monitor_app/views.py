@@ -6,6 +6,7 @@ from rest_framework.parsers import JSONParser
 from rest_framework import status
 
 from monitor_app import tasks
+from monitor_app.video_process import stream
 
 
 # Create your views here.
@@ -19,16 +20,21 @@ def stream_request(request):
     :return:
     """
     if request.method == "GET":
-        # tasks.stream_test.delay()
-        tasks.start_stream.delay()
-        return JsonResponse(
-            {"message": "Video streaming started. "}
-        )
+        pid = 0
+        if not stream.vs.process:
+            stream.vs.start_stream()
+            pid = stream.vs.get_pid()
+            return JsonResponse(
+                {"message": "Video streaming started. ", "pid": str(pid)}
+            )
+        else:
+            return JsonResponse(
+                {"message": "A stream process is already running! ", "pid": str(pid)}
+            )
 
     if request.method == "POST":
-        tasks.stop_stream.delay()
+        stream.vs.stop_stream()
+        stream.vs.process = None
 
-        # TODO To reliably confirm termination?
-        return JsonResponse({
-            "message": "Video streaming stopped. "
-        })
+        # TODO Handle ValueError write to closed file
+        return JsonResponse({"message": "Video streaming stopped. ", "pid": None})

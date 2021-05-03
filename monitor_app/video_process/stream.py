@@ -9,14 +9,14 @@ class VideoStream:
 
     def __init__(self):
         # default settings
-        self.input = "/dev/video2"
-        self.output = "rtmp://192.168.0.138/live/py"
+        self.input = "/dev/video0"
+        self.output = "rtmp://localhost/live/py"
         self.process = None
 
         # Defines the stream's input & output
         # ffmpeg -f v4l2 -video_size 1280x720 -input_format mjpeg -i /dev/video2 -b:v 1000k
         # -r 15 -f flv rtmp://192.168.0.138/live/py
-        self.input_args = {"f": "v4l2", "s": "1280x720", "input_format": "mjpeg"}
+        self.input_args = {"f": "v4l2", "s": "1280x720"}
 
         self.output_args = {"f": "flv", "r": "10", "b": "2000k"}
 
@@ -46,3 +46,9 @@ class VideoStream:
 
     def modify_stream_config(self):
         pass
+
+    def get_pid(self):
+        return self.process.pid
+
+
+vs = VideoStream()
