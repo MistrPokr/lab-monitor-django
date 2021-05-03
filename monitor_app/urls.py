@@ -3,5 +3,5 @@ from django.urls import path, re_path
 from monitor_app import views
 
 urlpatterns = [
-    path("stream", views.stream_request),
+    path("servo/<int:angle>", views.servo_control),
 ]
