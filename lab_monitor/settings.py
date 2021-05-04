@@ -52,10 +52,11 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
-
 CORS_ALLOW_ALL_ORIGINS = True
 # CORS_ALLOWED_ORIGINS = [
 #     "http://localhost:8080",  # for some reason 127.0.0.1 is blocked
+#     "http://192.168.0.112:8080", 
+#     "http://192.168.0.138:8080", 
 # ]
 
 ROOT_URLCONF = "lab_monitor.urls"
