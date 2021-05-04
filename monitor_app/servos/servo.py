@@ -1,3 +1,4 @@
+import time
 from django.core.cache import cache, caches
 import RPi.GPIO as GPIO
 import monitor_app.servos
@@ -11,10 +12,8 @@ class Servo:
         self.servopin = 18
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.servopin, GPIO.OUT, initial=False)
-        self.pwm = GPIO.PWM(self.servopin, 50)  # 50HZ
 
     def __del__(self):
-        self.pwm.stop()
         GPIO.cleanup()
         print("Cleanup ran")
 
@@ -24,20 +23,28 @@ class Servo:
         self.pwm.start(map_to_cycle(180))
 
     def spin(self, angle):
+        self.pwm = GPIO.PWM(self.servopin, 50)  # 50HZ
+
         self.angle = angle
-        cycle = map_to_cycle(angle)
-        self.pwm.ChangeDutyCycle(cycle)
+        self.pwm.start(map_to_cycle(self.angle))
+        time.sleep(0.01)
+        self.pwm.stop()
+        del self.pwm
 
 
-def map_to_cycle(degree):
+def map_to_cycle(input_degree):
     """
     0~180 degrees
     :return: 5~12.5
     """
-    degree = 180 - degree
+    degree = 180 - input_degree
     cycle_max = 12.5
     cycle_min = 5
     cycle = cycle_min + (cycle_max - cycle_min) / 180 * degree
+
+    if input_degree < 8:  # Prevents "locked" angles
+        cycle = map_to_cycle(8)
+
     return cycle
 
 
