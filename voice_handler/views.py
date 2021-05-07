@@ -1,16 +1,17 @@
-import tempfile
+import os
 
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.core.files import File
 from django.core.files.base import ContentFile
+from django.conf import settings
 
 from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 
 from voice_handler import models
-from voice_handler.tts import voice_synth
+from voice_handler.audio import synth, playback
 
 
 @api_view(["GET", "POST"])
@@ -42,14 +43,15 @@ def file_upload_handler(request, format=None):
 def tts_handler(request):
     if request.method == "POST":
         text = request.data["text"]
+        play = request.data["play"]
 
-        result = voice_synth.tts(synth_text=text)
+        result = synth.tts(synth_text=text)
 
         # file_obj = tempfile.NamedTemporaryFile(mode="w+b", suffix=".mp3")
         # file_obj.write(result)
 
         file_obj = ContentFile(result)
-        file_obj.name = 'audio.mp3'
+        file_obj.name = "audio.mp3"
 
         file = File(file_obj)
 
@@ -59,5 +61,8 @@ def tts_handler(request):
             synthesized=True,
         )
         new_voice_obj.save()
+
+        if play:
+            playback.play_audio(new_voice_obj.voice_file.path)
 
         return Response(status=204)
