@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "monitor_app.apps.MonitorAppConfig",
+    "voice_handler.apps.VoiceHandlerConfig"
 ]
 
 MIDDLEWARE = [
@@ -136,6 +137,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = "/static/"
+
+# Media storage
+MEDIA_ROOT = "/tmp/server_dist/media_root"
 
 # Celery Settings
 CELERY_TIMEZONE = "Asia/Shanghai"
