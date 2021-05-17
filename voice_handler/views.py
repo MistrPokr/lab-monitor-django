@@ -70,3 +70,19 @@ def tts_handler(request):
                 playback.play_audio(new_voice_obj.voice_file.path)
 
             return Response(status=204)
+
+
+@api_view(["GET"])
+def voice_list_handler(request):
+    queryset = models.VoiceFile.objects.all()
+    values = queryset.values("id", "text")
+    return JsonResponse(list(values), safe=False)
+
+
+@api_view(["POST"])
+def play_voice_handler(request, pk):
+    voice_id = int(pk)
+    voice_obj = models.VoiceFile.objects.get(pk=voice_id)
+
+    playback.play_audio(voice_obj.voice_file.path)
+    return Response(status=200)
