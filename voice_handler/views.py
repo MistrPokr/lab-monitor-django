@@ -1,5 +1,3 @@
-import os
-
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.core.files import File
@@ -42,27 +40,33 @@ def file_upload_handler(request, format=None):
 @api_view(["POST"])
 def tts_handler(request):
     if request.method == "POST":
-        text = request.data["text"]
-        play = request.data["play"]
+        req_text = request.data["text"]
+        req_play = request.data["play"]
 
-        result = synth.tts(synth_text=text)
+        # if text in new request matches existing ones
+        existing_voice_querylist = models.VoiceFile.objects.filter(text__exact=req_text)
 
-        # file_obj = tempfile.NamedTemporaryFile(mode="w+b", suffix=".mp3")
-        # file_obj.write(result)
+        if len(existing_voice_querylist) > 0:
+            if req_play:
+                playback.play_audio(existing_voice_querylist[0].voice_file.path)
+            return Response(status=204)
 
-        file_obj = ContentFile(result)
-        file_obj.name = "audio.mp3"
+        else:
+            result = synth.tts(synth_text=req_text)
 
-        file = File(file_obj)
+            file_obj = ContentFile(result)
+            file_obj.name = "audio.mp3"
 
-        new_voice_obj = models.VoiceFile(
-            text=text,
-            voice_file=file,
-            synthesized=True,
-        )
-        new_voice_obj.save()
+            file = File(file_obj)
 
-        if play:
-            playback.play_audio(new_voice_obj.voice_file.path)
+            new_voice_obj = models.VoiceFile(
+                text=req_text,
+                voice_file=file,
+                synthesized=True,
+            )
+            new_voice_obj.save()
 
-        return Response(status=204)
+            if req_play:
+                playback.play_audio(new_voice_obj.voice_file.path)
+
+            return Response(status=204)
