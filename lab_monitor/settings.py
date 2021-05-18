@@ -139,7 +139,7 @@ USE_TZ = True
 STATIC_URL = "/static/"
 
 # Media storage
-MEDIA_ROOT = "/tmp/server_dist/media_root"
+MEDIA_ROOT = "./media"
 
 # Celery Settings
 CELERY_TIMEZONE = "Asia/Shanghai"
