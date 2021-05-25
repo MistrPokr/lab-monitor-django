@@ -29,12 +29,14 @@ def servo_control(request, angle=None):
 
 @api_view(["GET"])
 def dht11_view(request):
-    queryset = DHTDataModel.objects.all().reverse()
+    queryset = DHTDataModel.objects.all().order_by('-time')
     last_dht_reading = queryset[0]
     if request.method == "GET":
         return JsonResponse(
             {
                 "temperature": last_dht_reading.temperature,
                 "humidity": last_dht_reading.humidity,
+                "time": last_dht_reading.time,
+                "id": last_dht_reading.id,
             }
         )

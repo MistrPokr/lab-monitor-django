@@ -1,4 +1,6 @@
 import subprocess
+import time
+
 import serial
 
 from monitor_app.models import DHTDataModel
@@ -24,9 +26,13 @@ class DHTSerial(serial.Serial):
 
     def read_data(self):
         while True:
-            self.buffer = self.readline()
-            self.interpret_readings(self.buffer)
-            self.save_readings()
+            for _ in range(9):
+                self.buffer = self.readline()
+                self.interpret_readings(self.buffer)
+                if _ == 8:
+                    self.save_readings()
+                    print(self.readings)
+                    time.sleep(1)
 
     def interpret_readings(self, buffer_string):
         """
