@@ -8,6 +8,7 @@ from rest_framework import status
 
 from monitor_app import servos
 from monitor_app.serials.utils import ser
+from monitor_app.models import DHTDataModel
 
 # Create your views here.
 
@@ -28,6 +29,12 @@ def servo_control(request, angle=None):
 
 @api_view(["GET"])
 def dht11_view(request):
+    queryset = DHTDataModel.objects.all().reverse()
+    last_dht_reading = queryset[0]
     if request.method == "GET":
-        last_dht_reading = ser.readings
-        return JsonResponse(last_dht_reading)
+        return JsonResponse(
+            {
+                "temperature": last_dht_reading.temperature,
+                "humidity": last_dht_reading.humidity,
+            }
+        )

@@ -18,6 +18,6 @@ from django.urls import path, re_path, include
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    # path("api/", include("monitor_app.urls")),
+    path("api/", include("monitor_app.urls")),
     re_path(r"^voice/", include("voice_handler.urls"))
 ]

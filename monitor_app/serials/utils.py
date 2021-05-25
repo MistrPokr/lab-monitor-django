@@ -1,6 +1,8 @@
 import subprocess
 import serial
 
+from monitor_app.models import DHTDataModel
+
 
 class DHTSerial(serial.Serial):
     def __init__(self, **kwargs):
@@ -12,11 +14,10 @@ class DHTSerial(serial.Serial):
         self.buffer = b""
 
         self.readings = {
-            "temperature": -1.0,
+            "temperature_c": -1.0,  # Celsius
             "humidity": -1.0,
         }
         self.open()
-        self.read_data()
 
     def set_port(self, port):
         self.port = port
@@ -25,6 +26,7 @@ class DHTSerial(serial.Serial):
         while True:
             self.buffer = self.readline()
             self.interpret_readings(self.buffer)
+            self.save_readings()
 
     def interpret_readings(self, buffer_string):
         """
@@ -58,6 +60,18 @@ class DHTSerial(serial.Serial):
 
             self.readings[type_string] = data
             return [type_string, data]
+
+    def save_readings(self):
+        data_records = DHTDataModel.objects.count()
+
+        if data_records > 100:
+            last_record = DHTDataModel.objects.all()[0]
+            last_record.delete()
+
+        DHTDataModel.objects.create(
+            temperature=self.readings["temperature_c"],
+            humidity=self.readings["humidity"],
+        )
 
 
 def list_ports():

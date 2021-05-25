@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "corsheaders",
+    "background_task",
     "monitor_app.apps.MonitorAppConfig",
     "voice_handler.apps.VoiceHandlerConfig",
 ]
