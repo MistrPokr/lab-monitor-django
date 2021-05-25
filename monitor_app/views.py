@@ -7,6 +7,7 @@ from rest_framework.parsers import JSONParser
 from rest_framework import status
 
 from monitor_app import servos
+from monitor_app.serials.utils import ser
 
 # Create your views here.
 
@@ -23,3 +24,10 @@ def servo_control(request, angle=None):
         # servos.servo.set_servo_angle(angle)
         servos.s.spin(angle)
         return JsonResponse({"message": f"Servo angle set to {angle}"})
+
+
+@api_view(["GET"])
+def dht11_view(request):
+    if request.method == "GET":
+        last_dht_reading = ser.readings
+        return JsonResponse(last_dht_reading)
