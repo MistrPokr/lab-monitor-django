@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
 from rest_framework import status
 
-from monitor_app import tasks, servos
+from monitor_app import servos
 
 # Create your views here.
 

@@ -25,7 +25,7 @@ SECRET_KEY = "z5@t(@_cr#t!1s_y26)zz^_ceb^adus)@ztg=9$-as7w#29mz*"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "monitor_app.apps.MonitorAppConfig",
-    "voice_handler.apps.VoiceHandlerConfig"
+    "voice_handler.apps.VoiceHandlerConfig",
 ]
 
 MIDDLEWARE = [
@@ -56,10 +56,18 @@ MIDDLEWARE = [
 CORS_ALLOW_ALL_ORIGINS = True
 # CORS_ALLOWED_ORIGINS = [
 #     "http://localhost:8080",  # for some reason 127.0.0.1 is blocked
-#     "http://192.168.0.112:8080", 
-#     "http://192.168.0.138:8080", 
+#     "http://192.168.0.112:8080",
+#     "http://192.168.0.138:8080",
 # ]
-
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",
+    ],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ],
+}
 ROOT_URLCONF = "lab_monitor.urls"
 
 TEMPLATES = [
