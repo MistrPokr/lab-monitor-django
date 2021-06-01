@@ -1,9 +1,10 @@
 import os
+from pathlib import Path
 from .models import VideoModel
 from lab_monitor.settings import VIDEO_STORAGE
 
 
-def scan_new_video(directory=VIDEO_STORAGE):
+def scan_new_video_files(directory=VIDEO_STORAGE):
     queryset = VideoModel.objects.all()
     new_file_list = scan_directory_file(directory=directory)
 
@@ -42,3 +43,11 @@ def remove_phantom_files(directory=VIDEO_STORAGE):
 
     phantoms_query = VideoModel.objects.filter(name__in=phantom_list)
     phantoms_query.delete()
+
+
+def delete_video_file(filename, directory=VIDEO_STORAGE):
+    p = Path(directory)
+    delete_file = p / filename
+    if delete_file.exists():
+        delete_file.unlink(missing_ok=True)
+    pass
