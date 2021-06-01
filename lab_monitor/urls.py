@@ -19,5 +19,6 @@ from django.urls import path, re_path, include
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("monitor_app.urls")),
-    re_path(r"^voice/", include("voice_handler.urls"))
+    re_path(r"^voice/", include("voice_handler.urls")), 
+    path("video/", include("video_tracker.urls"))
 ]

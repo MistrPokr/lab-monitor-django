@@ -152,4 +152,4 @@ STATIC_URL = "/static/"
 MEDIA_ROOT = "/tmp/server_dist/media_root"
 
 # Video Storage
-VIDEO_STORAGE = "/tmp/media"
+VIDEO_STORAGE = "/mnt/media/"
