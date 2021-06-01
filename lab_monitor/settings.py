@@ -149,12 +149,3 @@ STATIC_URL = "/static/"
 
 # Media storage
 MEDIA_ROOT = "/tmp/server_dist/media_root"
-
-# Celery Settings
-CELERY_TIMEZONE = "Asia/Shanghai"
-CELERY_BROKER_URL = "pyamqp://"
-CELERY_RESULT_BACKEND = "rpc://"
-CELERY_TASK_SERIALIZER = "json"
-CELERY_RESULT_SERIALIZER = "json"
-CELERY_ACCEPT_CONTENT = ["json"]
-CELERY_ENABLE_UTC = True
