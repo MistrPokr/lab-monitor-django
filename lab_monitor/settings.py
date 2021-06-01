@@ -25,7 +25,7 @@ SECRET_KEY = "z5@t(@_cr#t!1s_y26)zz^_ceb^adus)@ztg=9$-as7w#29mz*"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -39,8 +39,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "corsheaders",
+    "background_task",
     "monitor_app.apps.MonitorAppConfig",
-    "voice_handler.apps.VoiceHandlerConfig"
+    "voice_handler.apps.VoiceHandlerConfig",
 ]
 
 MIDDLEWARE = [
@@ -56,10 +57,18 @@ MIDDLEWARE = [
 CORS_ALLOW_ALL_ORIGINS = True
 # CORS_ALLOWED_ORIGINS = [
 #     "http://localhost:8080",  # for some reason 127.0.0.1 is blocked
-#     "http://192.168.0.112:8080", 
-#     "http://192.168.0.138:8080", 
+#     "http://192.168.0.112:8080",
+#     "http://192.168.0.138:8080",
 # ]
-
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",
+    ],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ],
+}
 ROOT_URLCONF = "lab_monitor.urls"
 
 TEMPLATES = [
@@ -140,12 +149,3 @@ STATIC_URL = "/static/"
 
 # Media storage
 MEDIA_ROOT = "/tmp/server_dist/media_root"
-
-# Celery Settings
-CELERY_TIMEZONE = "Asia/Shanghai"
-CELERY_BROKER_URL = "pyamqp://"
-CELERY_RESULT_BACKEND = "rpc://"
-CELERY_TASK_SERIALIZER = "json"
-CELERY_RESULT_SERIALIZER = "json"
-CELERY_ACCEPT_CONTENT = ["json"]
-CELERY_ENABLE_UTC = True

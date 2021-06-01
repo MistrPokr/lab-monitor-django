@@ -1,3 +1,7 @@
-import time
+from background_task import background
+from monitor_app.serials.utils import ser
 
-from celery import shared_task
+
+@background
+def read_from_serial_task():
+    ser.read_data()
