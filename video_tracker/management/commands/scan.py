@@ -8,4 +8,4 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         scan_new_video_files()
         remove_phantom_files()
-        self.stdout.write(self.style.SUCCESS("COMMAND HANDLER REGISTERED"))
+        self.stdout.write(self.style.SUCCESS("SCAN RAN"))
