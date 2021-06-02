@@ -27,7 +27,10 @@ class DHTSerial(serial.Serial):
     def read_data(self):
         while True:
             for _ in range(9):
-                self.buffer = self.readline()
+                try: 
+                    self.buffer = self.readline()
+                except serial.serialutil.SerialException: 
+                    return
                 self.interpret_readings(self.buffer)
                 if _ == 8:
                     self.save_readings()
