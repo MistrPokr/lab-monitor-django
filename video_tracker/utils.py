@@ -5,6 +5,7 @@ from lab_monitor.settings import VIDEO_STORAGE
 
 
 def scan_new_video_files(directory=VIDEO_STORAGE):
+    print("SCANNING")
     queryset = VideoModel.objects.all()
     new_file_list = scan_directory_file(directory=directory)
 
