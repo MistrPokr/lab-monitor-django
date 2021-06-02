@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import JsonResponse, FileResponse
+from django.http import JsonResponse, FileResponse, StreamingHttpResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -24,5 +24,12 @@ def download_video(request, filename):
         file_handle = open(target_obj.file, "rb")
         # file_handle.close()
 
-        response = FileResponse(file_handle, as_attachment=True)
+        response = FileResponse(
+            open(target_obj.file, "rb"), as_attachment=True, content_type="video/mp4"
+        )
+
+        # response = StreamingHttpResponse(
+        #     streaming_content=file_handle
+        # )
+
         return response
