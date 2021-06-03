@@ -74,15 +74,20 @@ def tts_handler(request):
 
 @api_view(["GET"])
 def voice_list_handler(request):
-    queryset = models.VoiceFile.objects.all()
-    values = queryset.values("id", "text")
-    return JsonResponse(list(values), safe=False)
+    if request.method == "GET":
+        queryset = models.VoiceFile.objects.all()
+        values = queryset.values("id", "text")
+        return JsonResponse(list(values), safe=False)
 
 
-@api_view(["POST"])
-def play_voice_handler(request, pk):
+@api_view(["POST", "DELETE"])
+def voice_file_handler(request, pk):
     voice_id = int(pk)
     voice_obj = models.VoiceFile.objects.get(pk=voice_id)
-
-    playback.play_audio(voice_obj.voice_file.path)
-    return Response(status=200)
+    if request.method == "POST":
+        playback.play_audio(voice_obj.voice_file.path)
+        return Response(status=200)
+    if request.method == "DELETE":
+        voice_obj.voice_file.delete()
+        voice_obj.delete()
+        return Response(status=200)
