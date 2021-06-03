@@ -61,11 +61,10 @@ def tts_handler(request):
 
             new_voice_obj = models.VoiceFile(
                 text=req_text,
+                voice_file=file,
                 synthesized=True,
             )
             new_voice_obj.save()
-
-            new_voice_obj.voice_file.save('audio.mp3',file_obj.file, save=True)
 
             if req_play:
                 playback.play_audio(new_voice_obj.voice_file.path)
