@@ -1,3 +1,5 @@
+import subprocess
+
 from monitor_app.servos import servo
 from django.shortcuts import render
 from django.http.response import JsonResponse
@@ -29,7 +31,7 @@ def servo_control(request, angle=None):
 
 @api_view(["GET"])
 def dht11_view(request):
-    queryset = DHTDataModel.objects.all().order_by('-time')
+    queryset = DHTDataModel.objects.all().order_by("-time")
     last_dht_reading = queryset[0]
     if request.method == "GET":
         return JsonResponse(
@@ -40,3 +42,46 @@ def dht11_view(request):
                 "id": last_dht_reading.id,
             }
         )
+
+
+@api_view(["GET", "POST"])
+def live_control_view(request):
+    if request.method == "GET":
+        task = subprocess.run(
+            [
+                "systemctl",
+                "is-active",
+                "motion.service",
+            ],
+            capture_output=True,
+        )
+        encoding = "utf-8"
+        output_info = {
+            "stdout": task.stdout.decode(encoding).strip("\n"),
+            "stderr": task.stderr.decode(encoding).strip("\n"),
+        }
+
+        status = 0
+        if output_info["stdout"] == "active":
+            status = 1
+
+        return JsonResponse({"status": status})
+
+    if request.method == "POST":
+        task = subprocess.run(
+            [
+                "sudo",
+                "systemctl",
+                "restart",
+                "motion.service",
+            ],
+            capture_output=True,
+        )
+
+        encoding = "utf-8"
+        output_info = {
+            "stdout": task.stdout.decode(encoding),
+            "stderr": task.stderr.decode(encoding).strip("\n"),
+        }
+
+        return JsonResponse(output_info)
