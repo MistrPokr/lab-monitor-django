@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "background_task",
     "monitor_app.apps.MonitorAppConfig",
     "voice_handler.apps.VoiceHandlerConfig",
+    "video_tracker.apps.VideoTrackerConfig",
 ]
 
 MIDDLEWARE = [
@@ -149,3 +150,9 @@ STATIC_URL = "/static/"
 
 # Media storage
 MEDIA_ROOT = "/tmp/server_dist/media_root"
+
+# Video Storage
+VIDEO_STORAGE = "/mnt/media/"
+
+
+BACKGROUND_TASK_RUN_ASYNC = True
