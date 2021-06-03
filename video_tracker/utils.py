@@ -1,7 +1,14 @@
 import os
+from tzlocal import get_localzone
+from datetime import datetime, timedelta
 from pathlib import Path
 from .models import VideoModel
-from lab_monitor.settings import VIDEO_STORAGE
+from lab_monitor.settings import VIDEO_STORAGE, STALE_LIMIT
+
+
+def time_diff(time0, time1, tz=None):
+    tz = get_localzone()
+    return time1 - time0
 
 
 def scan_new_video_files(directory=VIDEO_STORAGE):
@@ -9,14 +16,18 @@ def scan_new_video_files(directory=VIDEO_STORAGE):
     queryset = VideoModel.objects.all()
     new_file_list = scan_directory_file(directory=directory)
 
-    new_files = set([list(_)[0] for _ in queryset.values_list("name")]) ^ set(
-        list(new_file_list)
+    new_files = set(list(new_file_list)) - set(
+        [list(_)[0] for _ in queryset.values_list("name")]
     )
 
     if new_files is not None:
         for f in new_files:
-            file_path = VIDEO_STORAGE + f
-            new_vm = VideoModel(name=f, file=file_path)
+            file_path = Path(directory) / f
+            create_time = datetime.fromtimestamp(
+                os.stat(file_path).st_ctime, tz=get_localzone()
+            )
+
+            new_vm = VideoModel(name=f, file=file_path, time=create_time)
             new_vm.save()
 
 
@@ -29,6 +40,17 @@ def scan_directory_file(directory=VIDEO_STORAGE, extension=".mp4"):
                 target_list[entry.name] = os.stat(entry).st_mtime
 
     return target_list
+
+
+def remote_stale_videos(directory=VIDEO_STORAGE):
+    with os.scandir(directory) as dir_contents:
+        for entry in dir_contents:
+            delta = time_diff(
+                datetime.fromtimestamp(os.stat(entry).st_mtime, tz=get_localzone()),
+                datetime.now(tz=get_localzone()),
+            )
+            if delta > STALE_LIMIT:
+                os.remove(entry)
 
 
 def remove_phantom_files(directory=VIDEO_STORAGE):
