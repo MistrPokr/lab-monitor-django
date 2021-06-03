@@ -1,4 +1,6 @@
 import os
+from tzlocal import get_localzone
+from datetime import datetime
 from pathlib import Path
 from .models import VideoModel
 from lab_monitor.settings import VIDEO_STORAGE
@@ -15,8 +17,12 @@ def scan_new_video_files(directory=VIDEO_STORAGE):
 
     if new_files is not None:
         for f in new_files:
-            file_path = VIDEO_STORAGE + f
-            new_vm = VideoModel(name=f, file=file_path)
+            file_path = Path(directory) / f
+            create_time = datetime.fromtimestamp(
+                os.stat(file_path).st_ctime, tz=get_localzone()
+            )
+
+            new_vm = VideoModel(name=f, file=file_path, time=create_time)
             new_vm.save()
 
 

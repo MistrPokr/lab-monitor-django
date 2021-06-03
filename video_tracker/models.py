@@ -8,3 +8,4 @@ video_fs = FileSystemStorage(location=VIDEO_STORAGE)
 class VideoModel(models.Model):
     name = models.CharField(max_length=50)
     file = models.FilePathField()
+    time = models.DateTimeField()
