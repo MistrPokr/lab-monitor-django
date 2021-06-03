@@ -152,7 +152,7 @@ STATIC_URL = "/static/"
 MEDIA_ROOT = "/tmp/server_dist/media_root"
 
 # Video Storage
-VIDEO_STORAGE = "/mnt/media/"
+VIDEO_STORAGE = "/mnt/media/video"
 
 
 BACKGROUND_TASK_RUN_ASYNC = True
