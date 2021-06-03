@@ -11,9 +11,11 @@ from .utils import scan_directory_file
 @api_view(["GET"])
 def list_video(request):
     if request.method == "GET":
-        queryset = VideoModel.objects.all()
-        name_list = list(queryset.values_list("name"))
-        return JsonResponse([{"name": _[0]} for _ in name_list], safe=False)
+        queryset = VideoModel.objects.all().order_by("-time")
+        name_list = list(queryset.values_list("name", "time"))
+        return JsonResponse(
+            [{"name": _[0], "time": _[1]} for _ in name_list], safe=False
+        )
 
 
 @api_view(["GET"])
