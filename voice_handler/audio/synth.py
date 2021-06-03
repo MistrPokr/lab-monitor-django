@@ -6,7 +6,7 @@ API_KEY = API_SECRETS["API_KEY"]
 SECRET_KEY = API_SECRETS["SECRET_KEY"]
 
 
-def tts(synth_text):
+def tts(synth_text, speaker=0):
     """
     Baidu Text-to-Speech API handler
     :param synth_text: Text to be synthesized
@@ -20,6 +20,7 @@ def tts(synth_text):
         ctp=1,
         options={
             "vol": 5,
+            "per": speaker,
         },
     )
 

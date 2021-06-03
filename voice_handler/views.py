@@ -42,6 +42,7 @@ def tts_handler(request):
     if request.method == "POST":
         req_text = request.data["text"]
         req_play = request.data["play"]
+        req_speaker = request.data["speaker"]
 
         # if text in new request matches existing ones
         existing_voice_querylist = models.VoiceFile.objects.filter(text__exact=req_text)
@@ -52,7 +53,7 @@ def tts_handler(request):
             return Response(status=204)
 
         else:
-            result = synth.tts(synth_text=req_text)
+            result = synth.tts(synth_text=req_text, speaker=req_speaker)
 
             file_obj = ContentFile(result)
             file_obj.name = "audio.mp3"
