@@ -150,7 +150,7 @@ USE_TZ = True
 STATIC_URL = "/static/"
 
 # Media storage
-MEDIA_ROOT = "/tmp/server_dist/media_root"
+MEDIA_ROOT = "/mnt/media"
 
 # Video Storage
 VIDEO_STORAGE = "/mnt/media/video"
